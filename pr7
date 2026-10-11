@@ -1,0 +1,262 @@
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using student_feedback_management.Models;
+
+namespace student_feedback_management.Controllers
+{
+    public class FeedbackController : Controller
+    {
+        static List<Feedback> feedbackList = new List<Feedback>();
+        
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        public ActionResult Create()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Create(Feedback feedback)
+        {
+            feedbackList.Add(feedback);
+            return RedirectToAction("List");
+        }
+
+        public ActionResult List()
+        {
+            return View(feedbackList);
+        }
+    }
+}
+
+b.	Feedback.cs
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace student_feedback_management.Models
+{
+    public class Feedback
+    {
+        public string EnrolmentNo { get; set; }
+
+        public string StudentName { get; set; }
+
+        public string Subject { get; set; }
+
+        public int Rating { get; set; }
+
+        public string Comments { get; set; }
+    }
+}
+
+c.	Index.cshtml
+
+@{ 
+    Layout = "~/Views/Shared/_LayoutView.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Home Page</title>
+</head>
+<body>
+    @Html.Partial("_StudentInfo")
+    <div>
+        <p>@Html.ActionLink("Give Feedback", "Create", "Feedback")</p>
+        <p>@Html.ActionLink("View Feedback", "List", "Feedback")</p>
+    </div>
+</body>
+</html>
+
+
+
+
+d.	Create.cshtml
+
+@model student_feedback_management.Models.Feedback
+
+@{
+    Layout = "~/Views/Shared/_LayoutView.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Feedback Form</title>
+</head>
+<body>
+    <div>
+        @Html.Partial("_StudentInfo")
+        @using (Html.BeginForm())
+         {
+             <table>
+                 <tr>
+                     <td>@Html.LabelFor(v => v.EnrolmentNo)</td>
+                     <td>@Html.EditorFor(v => v.EnrolmentNo)</td>
+                 </tr>
+                 <tr>
+                     <td>@Html.LabelFor(model => model.StudentName)</td>
+                     <td>@Html.TextBoxFor(model => model.StudentName)</td>
+                 </tr>
+                 <tr>
+                     <td>@Html.LabelFor(model => model.Subject)</td>
+                     <td>@Html.TextBoxFor(model => model.Subject)</td>
+                 </tr>
+                 <tr>
+                     <td>@Html.LabelFor(model => model.Rating)</td>
+                     <td>@Html.TextBoxFor(model => model.Rating)</td>
+                 </tr>
+                 <tr>
+                     <td>@Html.LabelFor(model => model.Comments)</td>
+                     <td>@Html.TextAreaFor(model => model.Comments)</td>
+                 </tr>
+             </table>
+
+             <p>
+                 <input type="submit" value="Submit Feedback" />
+             </p>
+
+             <br />
+             <p>
+                 @Html.ActionLink("Back to Home", "Index", "Feedback")
+             </p>
+         }
+    </div>
+</body>
+</html>
+
+e.	List.cshtml
+
+@model List<student_feedback_management.Models.Feedback>
+
+@{ 
+    Layout = "~/Views/Shared/_LayoutView.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>List</title>
+</head>
+<body>
+    <div>
+        <table border="1" cellpadding="5">
+            <tr>
+                <th>Enrolment No</th>
+                <th>Student Name</th>
+                <th>Subject</th>
+                <th>Rating</th>
+                <th>Comments</th>
+            </tr>
+
+            @foreach (var i in Model)
+            {
+                <tr>
+                    <td>@i.EnrolmentNo</td>
+                    <td>@i.StudentName </td>
+                    <td>@i.Subject</td>
+                    <td>@i.Rating</td>
+                    <td>@i.Comments</td>
+                </tr>
+            }
+        </table>
+        <br />
+        @Html.ActionLink("Give Another Feedback", "Create", "Feedback")
+        <br />
+        <br />
+        @Html.ActionLink("Back to Home", "Index", "Feedback")
+    </div>
+</body>
+</html>
+
+f.	_LayoutView.cshtml
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+</head>
+<body style="background-color: beige">
+    <div>
+        <h1>Student Feedback Management System</h1>
+        <h4 style="font-family: Cambria">Name: Nancy Sangani <br />Enrolment No: 92400120652</h4>
+        <hr />
+    </div>
+
+    <div> @RenderBody() </div>
+
+    <div>
+        <p>
+            <b>Marwadi University - Department of Computer Science & Engineering</b>
+        </p>
+    </div>
+</body>
+</html>
+
+g.	_StudentInfo.cshtml
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Student Information</title>
+</head>
+<body>
+    <div>
+        <p><b>Student Feedback Portal</b></p>
+        <p>Please provide your valuable feedback!</p>
+    </div>
+</body>
+</html>
+
+h.	_ViewStart.cshtml
+
+@{
+    Layout = "~/Views/Shared/_LayoutView.cshtml";
+}
+
+i.	RouteConfig.cs
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using System.Web.Routing;
+
+namespace student_feedback_management
+{
+    public class RouteConfig
+    {
+        public static void RegisterRoutes(RouteCollection routes)
+        {
+            routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+
+            routes.MapRoute(
+                name: "Default",
+                url: "{controller}/{action}/{id}",
+                defaults: new { controller = "Feedback", action = "Index", id = UrlParameter.Optional }
+            );
+        }
+    }
+}
